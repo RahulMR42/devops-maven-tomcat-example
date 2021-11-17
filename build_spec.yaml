@@ -31,7 +31,7 @@ steps:
     name: "Install JDK11"
     command: |
       cd /tmp
-      wget https://download.java.net/openjdk/jdk11/ri/openjdk-11+28_linux-x64_bin.tar.gz
+      wget -nv https://download.java.net/openjdk/jdk11/ri/openjdk-11+28_linux-x64_bin.tar.gz
       tar -xvf openjdk-11+28_linux-x64_bin.tar.gz
       export JAVA_HOME=/tmp/jdk-11
       export PATH=/tmp/jdk-11/bin:$PATH

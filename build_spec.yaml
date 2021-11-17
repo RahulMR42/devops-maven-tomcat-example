@@ -52,6 +52,13 @@ steps:
       mvn clean install
       mvn package
 
+  - type: Command
+    timeoutInSeconds: 600
+    name: "Create container image"
+    command: |
+      cd ${OCI_WORKSPACE_DIR}/maven-tomcat-example
+      ls target/
+
 
 outputArtifacts:
   - name: output01

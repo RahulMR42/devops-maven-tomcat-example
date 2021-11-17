@@ -36,7 +36,6 @@ steps:
       export JAVA_HOME=/tmp/jdk-11
       export PATH=/tmp/jdk-11/bin:$PATH
       java -version
-
     onFailure:
       - type: Command
         command: |
@@ -45,6 +44,13 @@ steps:
         timeoutInSeconds: 40
         runAs: root
   
+  - type: Command
+    timeoutInSeconds: 600
+    name: "Maven install"
+    command: |
+      cd ${OCI_WORKSPACE_DIR}/maven-tomcat-example
+      mvn clean install
+      mvn package
 
 
 outputArtifacts:

@@ -31,12 +31,11 @@ steps:
     name: "Install JDK11"
     command: |
       cd /tmp
-      wget https://download.java.net/openjdk/jdk11/ri/openjdk-11+28_linux-x64_bin.tar.gz
-      tar -xvf openjdk-11+28_linux-x64_bin.tar.gz
+      wget -nv https://download.java.net/openjdk/jdk11/ri/openjdk-11+28_linux-x64_bin.tar.gz
+      tar -xf openjdk-11+28_linux-x64_bin.tar.gz
       export JAVA_HOME=/tmp/jdk-11
       export PATH=/tmp/jdk-11/bin:$PATH
       java -version
-
     onFailure:
       - type: Command
         command: |
@@ -45,11 +44,30 @@ steps:
         timeoutInSeconds: 40
         runAs: root
   
+  - type: Command
+    timeoutInSeconds: 600
+    name: "Maven install"
+    command: |
+      cd ${OCI_WORKSPACE_DIR}/maven-tomcat-example
+      mvn clean install
+      mvn package
+
+  - type: Command
+    timeoutInSeconds: 600
+    name: "Create container image"
+    command: |
+      cd ${OCI_WORKSPACE_DIR}/maven-tomcat-example
+      docker build --pull --rm -t maven-tomcat-example .
 
 
 outputArtifacts:
   - name: output01
     type: BINARY
+    # built java archive, in case we need it
+    location: ${OCI_WORKSPACE_DIR}/maven-tomcat-example/target/demo.war
+  - name: output02
+    type: DOCKER_IMAGE
+    # this is only the locally exported container image name
     # this location tag doesn't effect the tag used to deliver the container image
-    # to the Container Registry
-    location: ${OCI_WORKSPACE_DIR}/maven-tomcat-example/target/demo/demo.war
+    # to the Container Registry.
+    location: maven-tomcat-example:latest
